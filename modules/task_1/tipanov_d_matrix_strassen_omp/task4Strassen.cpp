@@ -1,7 +1,6 @@
+// Copyright 2019 Tipanov Daniil
 #include <iostream>
-#include <time.h>
-
-using namespace std;
+#include <ctime>
 
 double** matrCreate(int N) {
     double **matr = new double*[N];
@@ -20,11 +19,11 @@ void delMatr(double** matr, int N) {
 void printMatr(double** matr, int N) {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++)
-            cout << matr[i][j] << " ";
-        cout << endl;
+            std::cout << matr[i][j] << " ";
+        std::cout << std::endl;
     }
 
-    cout << endl;
+    std::cout << std::endl;
 }
 
 void genRandMatr(double** matr1, double** matr2, int N) {
@@ -84,17 +83,21 @@ bool isEqual(double** matr1, double** matr2, int N) {
 }
 
 void str_alg(double** matr1, double** matr2, double** matr3, int N, int threshold) {
-    if (N <= threshold)
+    if (N <= threshold) {
         simple_alg(matr1, matr2, matr3, N);
+    }
     else {
         N = N / 2;
 
         double** A[4]; double** B[4]; double** C[4]; double** P[7];
 
-        double** TMP1 = matrCreate(N); double** TMP2 = matrCreate(N); double** TMP3 = matrCreate(N); double** TMP4 = matrCreate(N); double** TMP5 = matrCreate(N);
-        double** TMP6 = matrCreate(N); double** TMP7 = matrCreate(N); double** TMP8 = matrCreate(N); double** TMP9 = matrCreate(N); double** TMP10 = matrCreate(N);
+        double** TMP1 = matrCreate(N); double** TMP2 = matrCreate(N);
+        double** TMP3 = matrCreate(N); double** TMP4 = matrCreate(N);
+        double** TMP5 = matrCreate(N); double** TMP6 = matrCreate(N);
+        double** TMP7 = matrCreate(N); double** TMP8 = matrCreate(N);
+        double** TMP9 = matrCreate(N); double** TMP10 = matrCreate(N);
 
-        /*Выделяем память под вспомогательные матрицы*/
+        /* Videlenie pamyati pod vspomogatelnie matrici */
         for (int i = 0; i < 4; i++) {
             A[i] = matrCreate(N);
             B[i] = matrCreate(N);
@@ -119,32 +122,32 @@ void str_alg(double** matr1, double** matr2, double** matr3, int N, int threshol
 
         Add(A[0], A[3], TMP1, N);
         Add(B[0], B[3], TMP2, N);
-        str_alg(TMP1, TMP2, P[0], N, threshold); // (A11 + A22)*(B11 + B22)
+        str_alg(TMP1, TMP2, P[0], N, threshold);  // (A11 + A22)*(B11 + B22)
 
         Add(A[2], A[3], TMP3, N);
-        str_alg(TMP3, B[0], P[1], N, threshold); // (A21 + A22)*B11
+        str_alg(TMP3, B[0], P[1], N, threshold);  // (A21 + A22)*B11
 
         Sub(B[1], B[3], TMP4, N);
-        str_alg(A[0], TMP4, P[2], N, threshold); // A11*(B12 - B22)
+        str_alg(A[0], TMP4, P[2], N, threshold);  // A11*(B12 - B22)
 
         Sub(B[2], B[0], TMP5, N);
-        str_alg(A[3], TMP5, P[3], N, threshold); // A22*(B21 - B11)
+        str_alg(A[3], TMP5, P[3], N, threshold);  // A22*(B21 - B11)
 
         Add(A[0], A[1], TMP6, N);
-        str_alg(TMP6, B[3], P[4], N, threshold); // (A11 + A12)*B22
+        str_alg(TMP6, B[3], P[4], N, threshold);  // (A11 + A12)*B22
 
         Sub(A[2], A[0], TMP7, N);
         Add(B[0], B[1], TMP8, N);
-        str_alg(TMP7, TMP8, P[5], N, threshold); // (A21 - A11)*(B11 + B12)
+        str_alg(TMP7, TMP8, P[5], N, threshold);  // (A21 - A11)*(B11 + B12)
 
         Sub(A[1], A[3], TMP9, N);
         Add(B[2], B[3], TMP10, N);
-        str_alg(TMP9, TMP10, P[6], N, threshold); // (A12 - A22)*(B21 + B22)
+        str_alg(TMP9, TMP10, P[6], N, threshold);  // (A12 - A22)*(B21 + B22)
 
-        Sub(P[0], P[3], P[6], P[4], C[0], N); // P1 + P4 - P5 + P7
-        Add(P[2], P[4], C[1], N); // P3 + P5
-        Add(P[1], P[3], C[2], N); // P2 + P4
-        Sub(P[0], P[2], P[5], P[1], C[3], N); // P1 - P2 + P3 + P6
+        Sub(P[0], P[3], P[6], P[4], C[0], N);  // P1 + P4 - P5 + P7
+        Add(P[2], P[4], C[1], N);  // P3 + P5
+        Add(P[1], P[3], C[2], N);  // P2 + P4
+        Sub(P[0], P[2], P[5], P[1], C[3], N);  // P1 - P2 + P3 + P6
 
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++) {
@@ -185,51 +188,49 @@ int main(int argc, char** argv) {
 
     /* cout << "Enter the degree of two for size: " << endl;
     cin >> k; */
-	k = 8;
+    k = 8;
 
-    N = (int)pow(2.0, k);
+    N = static_cast<int>(pow(2.0, k));
 
-    cout << "Size of matrix: " << N << " x " << N << endl;
+    std::cout << "Size of matrix: " << N << " x " << N << std::endl;
 
-    /* Создание и заполнение матриц */
+    /* Creating and filling matrix */
     matr_A = matrCreate(N);
     matr_B = matrCreate(N);
     matr_Rez_Str = matrCreate(N);
     matr_Rez_Check = matrCreate(N);
     genRandMatr(matr_A, matr_B, N);
 
-    /* Последовательный алгоритм */
-    StartStrAlg = clock() / (double)CLOCKS_PER_SEC;
+    /* Strassen alg */
+    StartStrAlg = clock() / static_cast<double>(CLOCKS_PER_SEC);
     str_alg(matr_A, matr_B, matr_Rez_Str, N, thr);
-    TimeStrAlg = (clock() / (double)CLOCKS_PER_SEC) - StartStrAlg;
+    TimeStrAlg = (clock() / static_cast<double>(CLOCKS_PER_SEC)) - StartStrAlg;
 
-    /* Вывод матриц, если размер матриц максимум 16x16*/
-    if (k < 5) {
-        cout << "Matrix A: " << endl;
+    /* Printing matrix */
+      /*  std::cout << "Matrix A: " << std::endl;
         printMatr(matr_A, N);
-        cout << endl;
-        cout << "Matrix B: " << endl;
+        std::cout << std::endl;
+        std::cout << "Matrix B: " << std::endl;
         printMatr(matr_B, N);
-        cout << endl;
-        cout << "Matrix C: " << endl;
+        std::cout << std::endl;
+        std::cout << "Matrix C: " << std::endl;
         printMatr(matr_Rez_Str, N);
-        cout << endl;
-    }
+        std::cout << std::endl;  */
 
-    /* Проверка результата умножение матриц алгоритмом Штрассена и обычным алгоритмом */
+    /* Check results Strassen and simple alg */
        /* StartSimpleAlg = clock() / (double)CLOCKS_PER_SEC;
         simple_alg(matr_A, matr_B, matr_Rez_Check, N);
         TimeSimpleAlg = (clock() / (double)CLOCKS_PER_SEC) - StartSimpleAlg;
 
         if (isEqual(matr_Rez_Check, matr_Rez_Str, N))
-            cout << "Check: matr_Rez_Check and matr_Rez_Str are equal";
+            std::cout << "Check: matr_Rez_Check and matr_Rez_Str are equal";
         else
-            cout << "Check: matr_Rez_Check and matr_Rez_Str are not equal";
-        cout << endl;
-        cout << "Simple algorithm time = " << TimeSimpleAlg << endl; */
+            std::cout << "Check: matr_Rez_Check and matr_Rez_Str are not equal";
+        std::cout << std::endl;
+        std::cout << "Simple algorithm time = " << TimeSimpleAlg << std::endl; */
 
-    /* Вывод времени работы алгоритмов*/
-    cout << "Strassen algorithm time = " << TimeStrAlg << endl;
+    /* Printing time */
+    std::cout << "Strassen algorithm time = " << TimeStrAlg << std::endl;
 
     delMatr(matr_Rez_Check, N);
     delMatr(matr_Rez_Str, N);
