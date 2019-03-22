@@ -31,8 +31,8 @@ void genRandMatr(double** matr1, double** matr2, int N) {
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            matr1[i][j] = (rand() % 10) * 0.02;
-            matr2[i][j] = (rand() % 10) * 0.02;
+            matr1[i][j] = (std::rand() % 10) * 0.02;
+            matr2[i][j] = (std::rand() % 10) * 0.02;
         }
     }
 }
@@ -85,8 +85,7 @@ bool isEqual(double** matr1, double** matr2, int N) {
 void str_alg(double** matr1, double** matr2, double** matr3, int N, int threshold) {
     if (N <= threshold) {
         simple_alg(matr1, matr2, matr3, N);
-    }
-    else {
+    } else {
         N = N / 2;
 
         double** A[4]; double** B[4]; double** C[4]; double** P[7];
