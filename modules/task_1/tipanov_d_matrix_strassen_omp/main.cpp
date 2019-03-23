@@ -1,5 +1,6 @@
 // Copyright 2019 Tipanov Daniil
 #include <iostream>
+#include <cmath>
 #include <ctime>
 
 double** matrCreate(int N) {
@@ -179,8 +180,8 @@ int main(int argc, char** argv) {
 
     int  N, thr = 64;
 
-    double StartSimpleAlg = 0;
-    double TimeSimpleAlg = 0;
+    /* double StartSimpleAlg = 0;
+    double TimeSimpleAlg = 0; */
     double StartStrAlg = 0;
     double TimeStrAlg = 0;
     int k;
