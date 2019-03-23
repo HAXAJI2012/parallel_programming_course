@@ -28,7 +28,7 @@ void printMatr(double** matr, int N) {
 }
 
 void genRandMatr(double** matr1, double** matr2, int N) {
-    srand(time(0));
+    std::srand((static_cast<unsigned int>(time(0)));
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
