@@ -1,7 +1,7 @@
 // Copyright 2019 Tipanov Daniil
+#include <omp.h>
 #include <iostream>
 #include <ctime>
-#include <omp.h>
 
 // define CHUNK_SIZE 10
 
@@ -173,21 +173,20 @@ void str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold) {
     }
 }
 
-void par_str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold)
-{
+void par_str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold) {
     if (N <= threshold)
         simple_alg(matr1, matr2, matr3, N);
-    else
-    {
+    else {
         N = N / 2;
 
         int** A[4]; int** B[4]; int** C[4]; int** P[7];
 
-        int** TMP1 = matrCreate(N); int** TMP2 = matrCreate(N); int** TMP3 = matrCreate(N); int** TMP4 = matrCreate(N); int** TMP5 = matrCreate(N);
-        int** TMP6 = matrCreate(N); int** TMP7 = matrCreate(N); int** TMP8 = matrCreate(N); int** TMP9 = matrCreate(N); int** TMP10 = matrCreate(N);
+        int** TMP1 = matrCreate(N); int** TMP2 = matrCreate(N); int** TMP3 = matrCreate(N);
+        int** TMP4 = matrCreate(N); int** TMP5 = matrCreate(N); int** TMP6 = matrCreate(N);
+        int** TMP7 = matrCreate(N); int** TMP8 = matrCreate(N); int** TMP9 = matrCreate(N);
+        int** TMP10 = matrCreate(N);
 
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++) {
             A[i] = matrCreate(N);
             B[i] = matrCreate(N);
             C[i] = matrCreate(N);
@@ -200,10 +199,9 @@ void par_str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold)
 
         #pragma omp parallel
         {
-            #pragma omp for private(i,j)
+            #pragma omp for private(i, j)
                 for (i = 0; i < N; i++)
-                    for (j = 0; j < N; j++)
-                    {
+                    for (j = 0; j < N; j++) {
                         A[0][i][j] = matr1[i][j];
                         A[1][i][j] = matr1[i][j + N];
                         A[2][i][j] = matr1[i + N][j];
@@ -221,61 +219,60 @@ void par_str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold)
                 {
                     Add(A[0], A[3], TMP1, N);
                     Add(B[0], B[3], TMP2, N);
-                    par_str_alg(TMP1, TMP2, P[0], N, threshold); // (A11 + A22)*(B11 + B22)
+                    par_str_alg(TMP1, TMP2, P[0], N, threshold);  // (A11 + A22)*(B11 + B22)
                 }
                 #pragma omp section
                 {
                     Add(A[2], A[3], TMP3, N);
-                    par_str_alg(TMP3, B[0], P[1], N, threshold); // (A21 + A22)*B11
+                    par_str_alg(TMP3, B[0], P[1], N, threshold);  // (A21 + A22)*B11
                 }
                 #pragma omp section
                 {
                     Sub(B[1], B[3], TMP4, N);
-                    par_str_alg(A[0], TMP4, P[2], N, threshold); // A11*(B12 - B22)
+                    par_str_alg(A[0], TMP4, P[2], N, threshold);  // A11*(B12 - B22)
                 }
                 #pragma omp section
                 {
                     Sub(B[2], B[0], TMP5, N);
-                    par_str_alg(A[3], TMP5, P[3], N, threshold); // A22*(B21 - B11)
+                    par_str_alg(A[3], TMP5, P[3], N, threshold);  // A22*(B21 - B11)
                 }
                 #pragma omp section
                 {
                     Add(A[0], A[1], TMP6, N);
-                    par_str_alg(TMP6, B[3], P[4], N, threshold); // (A11 + A12)*B22
+                    par_str_alg(TMP6, B[3], P[4], N, threshold);  // (A11 + A12)*B22
                 }
                 #pragma omp section
                 {
                     Sub(A[2], A[0], TMP7, N);
                     Add(B[0], B[1], TMP8, N);
-                    par_str_alg(TMP7, TMP8, P[5], N, threshold); // (A21 - A11)*(B11 + B12)
+                    par_str_alg(TMP7, TMP8, P[5], N, threshold);  // (A21 - A11)*(B11 + B12)
                 }
                 #pragma omp section
                 {
                     Sub(A[1], A[3], TMP9, N);
                     Add(B[2], B[3], TMP10, N);
-                    par_str_alg(TMP9, TMP10, P[6], N, threshold); // (A12 - A22)*(B21 + B22)
+                    par_str_alg(TMP9, TMP10, P[6], N, threshold);  // (A12 - A22)*(B21 + B22)
                 }
             }
 
             #pragma omp sections
             {
                 #pragma omp section
-                    Sub(P[0], P[3], P[6], P[4], C[0], N); // P1 + P4 - P5 + P7
+                    Sub(P[0], P[3], P[6], P[4], C[0], N);  // P1 + P4 - P5 + P7
 
                 #pragma omp section
-                    Add(P[2], P[4], C[1], N); // P3 + P5
+                    Add(P[2], P[4], C[1], N);  // P3 + P5
 
                 #pragma omp section
-                    Add(P[1], P[3], C[2], N); // P2 + P4
+                    Add(P[1], P[3], C[2], N);  // P2 + P4
 
                 #pragma omp section
-                    Sub(P[0], P[2], P[5], P[1], C[3], N); // P1 - P2 + P3 + P6
+                    Sub(P[0], P[2], P[5], P[1], C[3], N);  // P1 - P2 + P3 + P6
             }
 
-            #pragma omp for private(i,j)
+            #pragma omp for private(i, j)
                 for (i = 0; i < N; i++)
-                    for (j = 0; j < N; j++)
-                    {
+                    for (j = 0; j < N; j++) {
                         matr3[i][j] = C[0][i][j];
                         matr3[i][j + N] = C[1][i][j];
                         matr3[i + N][j] = C[2][i][j];
