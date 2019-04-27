@@ -31,7 +31,7 @@ void printMatr(int** matr, int N) {
 }
 
 void genRandMatr(int** matr1, int** matr2, int N) {
-    std::srand(static_cast<unsigned int>time(0));
+    std::srand(static_cast<unsigned int>(time(0)));
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             matr1[i][j] = std::rand() % 10;
