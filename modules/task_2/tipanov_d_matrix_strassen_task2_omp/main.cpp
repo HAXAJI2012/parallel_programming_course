@@ -176,8 +176,7 @@ void str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold) {
 void par_str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold) {
     if (N <= threshold) {
         simple_alg(matr1, matr2, matr3, N);
-    }
-    else {
+    } else {
         N = N / 2;
 
         int** A[4]; int** B[4]; int** C[4]; int** P[7];
