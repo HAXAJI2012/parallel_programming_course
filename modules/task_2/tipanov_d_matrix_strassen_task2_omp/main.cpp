@@ -1,6 +1,7 @@
 // Copyright 2019 Tipanov Daniil
 #include <omp.h>
 #include <iostream>
+#include <cmath>
 #include <ctime>
 
 // define CHUNK_SIZE 10
@@ -30,7 +31,7 @@ void printMatr(int** matr, int N) {
 }
 
 void genRandMatr(int** matr1, int** matr2, int N) {
-    srand(time(0));
+    std::srand(static_cast<unsigned int>time(0));
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             matr1[i][j] = std::rand() % 10;
@@ -192,16 +193,14 @@ void par_str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold) {
             C[i] = matrCreate(N);
         }
 
-        int i, j;
-
         for (int i = 0; i < 7; i++)
             P[i] = matrCreate(N);
 
         #pragma omp parallel
         {
-            #pragma omp for private(i, j)
-                for (i = 0; i < N; i++)
-                    for (j = 0; j < N; j++) {
+            #pragma omp for
+                for (int i = 0; i < N; i++)
+                    for (int j = 0; j < N; j++) {
                         A[0][i][j] = matr1[i][j];
                         A[1][i][j] = matr1[i][j + N];
                         A[2][i][j] = matr1[i + N][j];
@@ -270,9 +269,9 @@ void par_str_alg(int** matr1, int** matr2, int** matr3, int N, int threshold) {
                     Sub(P[0], P[2], P[5], P[1], C[3], N);  // P1 - P2 + P3 + P6
             }
 
-            #pragma omp for private(i, j)
-                for (i = 0; i < N; i++)
-                    for (j = 0; j < N; j++) {
+            #pragma omp for
+                for (int i = 0; i < N; i++)
+                    for (int j = 0; j < N; j++) {
                         matr3[i][j] = C[0][i][j];
                         matr3[i][j + N] = C[1][i][j];
                         matr3[i + N][j] = C[2][i][j];
@@ -304,8 +303,8 @@ int main(int argc, char** argv) {
 
     int  N, thr = 64;
 
-    double StartSimpleAlg = 0;
-    double TimeSimpleAlg = 0;
+    /* double StartSimpleAlg = 0;
+    double TimeSimpleAlg = 0; */
     double StartStrAlg = 0;
     double TimeStrAlg = 0;
     double StartParAlg = 0;
