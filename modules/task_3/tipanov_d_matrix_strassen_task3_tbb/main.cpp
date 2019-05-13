@@ -353,7 +353,7 @@ int main(int argc, char** argv) {
 
     /* Printing time */
     std::cout << "Strassen algorithm time = " << TimeStrAlg << std::endl;
-    std::cout << "Strassen parallel algorithm time = " << (tP1 - tP2).seconds() << std::endl;
+    std::cout << "Strassen parallel algorithm time = " << (tP2 - tP1).seconds() << std::endl;
     std::cout << std::endl;
 
     delMatr(matr_Rez_Check, N);
